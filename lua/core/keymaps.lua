@@ -40,6 +40,7 @@ which_key.add({
     { "<leader>st",  telescope.current_buffer_fuzzy_find, desc = "Search in this buffer" },
     { "<leader>sd",  telescope.commands,                  desc = "Search commands" },
     { "<leader>sc",  telescope.grep_string,               desc = "Search cursor grep" },
+    { "<leader>sw",  telescope.live_grep,                 desc = "Search live grep" },
     { "<leader>sg",  telescope.live_grep,                 desc = "Search live grep" },
     { "<leader>sb",  telescope.buffers,                   desc = "Search buffer" },
     { "<leader>sh",  telescope.help_tags,                 desc = "Search help tags" },
@@ -284,7 +285,8 @@ which_key.add({
   -- UI/UX
   {
     { "<leader>u",  group = "User interface" },
-    { "<leader>ut", "<CMD>:Themify<CR>",     desc = "Show themes" },
+    { "<leader>ut", "<CMD>:Themify<CR>",     desc = "Show Themify manager" },
+    { "<leader>uT", "<CMD>:Telescope colorscheme<CR>",     desc = "Pick colorscheme (Telescope)" },
     {
       "<leader>un",
       function()
@@ -292,5 +294,7 @@ which_key.add({
       end,
       desc = "Toggle relative line numbers"
     },
+    { "<leader>ud", "<CMD>:Twilight<CR>", desc = "Toggle dimming" },
+    { "<leader>uz", "<CMD>:ZenMode<CR>", desc = "Toggle Zen Mode" },
   },
 })
