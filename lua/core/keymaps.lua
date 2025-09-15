@@ -68,6 +68,7 @@ which_key.add({
   },
   -- Code
   {
+    mode = {"v", "n"},
     { "<leader>c",  group = "Code" },
     { "<leader>ct", tidy.run,                desc = "Trim whitespace" },
     { "<leader>cr", vim.lsp.buf.rename,      desc = "Rename" },
@@ -251,7 +252,7 @@ which_key.add({
   },
   -- Bookmarks
   {
-    { "<leader>m", group = "Bookmarks" },
+    { "<leader>m",  group = "Bookmarks" },
     {
       "<leader>mm",
       function()
@@ -285,8 +286,8 @@ which_key.add({
   -- UI/UX
   {
     { "<leader>u",  group = "User interface" },
-    { "<leader>ut", "<CMD>:Themify<CR>",     desc = "Show Themify manager" },
-    { "<leader>uT", "<CMD>:Telescope colorscheme<CR>",     desc = "Pick colorscheme (Telescope)" },
+    { "<leader>ut", "<CMD>:Themify<CR>",               desc = "Show Themify manager" },
+    { "<leader>uT", "<CMD>:Telescope colorscheme<CR>", desc = "Pick colorscheme (Telescope)" },
     {
       "<leader>un",
       function()
@@ -295,6 +296,6 @@ which_key.add({
       desc = "Toggle relative line numbers"
     },
     { "<leader>ud", "<CMD>:Twilight<CR>", desc = "Toggle dimming" },
-    { "<leader>uz", "<CMD>:ZenMode<CR>", desc = "Toggle Zen Mode" },
+    { "<leader>uz", "<CMD>:ZenMode<CR>",  desc = "Toggle Zen Mode" },
   },
 })
