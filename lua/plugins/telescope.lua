@@ -6,6 +6,11 @@ return {
   },
   config = function()
     local telescope = require("telescope")
+    telescope.setup({
+      defaults = {
+        layout_strategy = "vertical",
+      }
+    })
     telescope.load_extension("ui-select")
     telescope.load_extension("noice")
   end,

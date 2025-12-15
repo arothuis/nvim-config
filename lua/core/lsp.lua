@@ -1,6 +1,8 @@
 vim.lsp.enable({
   "lua_ls",
   "clojure_lsp",
+  -- "eslint",
+  "ts_lsp",
 })
 
 vim.diagnostic.config({

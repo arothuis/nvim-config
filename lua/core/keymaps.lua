@@ -4,7 +4,7 @@ local flash = require("flash")
 local tidy = require("tidy")
 local oil = require("oil")
 local gitsigns = require("gitsigns")
-local lspmark = require('lspmark.bookmarks')
+local lspmark = require("lspmark.bookmarks")
 
 which_key.add({
   -- Global
@@ -23,7 +23,10 @@ which_key.add({
     { "z",        group = "z commands" },
     { "[",        group = "[ commands" },
     { "]",        group = "] commands" },
+    { "<A-o>",    "o<Esc>",                    desc = "Insert newline after this line",  mode = "n" },
+    { "<A-O>",    "O<Esc>",                    desc = "Insert newline before this line", mode = "n" },
     { "<leader>", group = "Leader" },
+    { "<Esc>",    "<cmd>nohlsearch<CR>",       desc = "Clear search highlight" }
   },
   -- Help
   {
@@ -39,13 +42,18 @@ which_key.add({
     { "<leader>so",  telescope.oldfiles,                  desc = "Search old file" },
     { "<leader>st",  telescope.current_buffer_fuzzy_find, desc = "Search in this buffer" },
     { "<leader>sd",  telescope.commands,                  desc = "Search commands" },
-    { "<leader>sc",  telescope.grep_string,               desc = "Search cursor grep" },
+    { "<leader>ss",  telescope.grep_string,               desc = "Search cursor grep" },
     { "<leader>sw",  telescope.live_grep,                 desc = "Search live grep" },
     { "<leader>sg",  telescope.live_grep,                 desc = "Search live grep" },
     { "<leader>sb",  telescope.buffers,                   desc = "Search buffer" },
     { "<leader>sh",  telescope.help_tags,                 desc = "Search help tags" },
     { "<leader>sk",  telescope.keymaps,                   desc = "Search keymaps" },
-    { "<leader>css", telescope.lsp_workspace_symbols,     desc = "Search workspace symbols " },
+    { "<leader>sc",  group = "Search code (LSP)" },
+    { "<leader>sci", telescope.lsp_implementations,       desc = "Search implementations" },
+    { "<leader>scr", telescope.lsp_references,            desc = "Search references" },
+    { "<leader>sct", telescope.lsp_type_definition,       desc = "Search type definition" },
+    { "<leader>scs", telescope.lsp_workspace_symbols,     desc = "Search workspace symbols " },
+    { "<leader>sT",  "<cmd>TodoTelescope<cr>",            desc = "Search todo comments" },
   },
   -- Flash (cursor jumping)
   {
@@ -64,11 +72,25 @@ which_key.add({
       end,
       desc = "Explore configuration (Oil)"
     },
+    {
+      "<leader>fk",
+      function()
+        oil.open(vim.fn.stdpath("config") .. "/" .. "lua/core/keymaps.lua")
+      end,
+      desc = "Open keymaps file (Oil)"
+    },
+    {
+      "<leader>fh",
+      function()
+        oil.open("~")
+      end,
+      desc = "Explore home directory (Oil)"
+    },
     { "<leader>o", oil.open, desc = "Explore workspace (Oil)" }
   },
   -- Code
   {
-    mode = {"v", "n"},
+    mode = { "v", "n" },
     { "<leader>c",  group = "Code" },
     { "<leader>ct", tidy.run,                desc = "Trim whitespace" },
     { "<leader>cr", vim.lsp.buf.rename,      desc = "Rename" },
@@ -124,9 +146,6 @@ which_key.add({
       "<cmd>Trouble lsp_type_definitions toggle focus=false win.position=right<cr>",
       desc = "Show type definitions (Trouble)"
     },
-    -- { "<leader>csi", telescope.lsp_implementations, desc = "Show implementations" },
-    -- { "<leader>csr", telescope.lsp_references, desc = "Show references" },
-    -- { "<leader>cst", telescope.lsp_type_definition, desc = "Show type definition" },
     { "<leader>csh", vim.lsp.buf.signature_help, desc = "Show signature help" },
     { "<leader>cc",  vim.lsp.buf.signature_help, desc = "Show signature help" },
     -- See LSP-specific config
@@ -156,7 +175,7 @@ which_key.add({
     },
     { "<leader>ghp", gitsigns.preview_hunk,        desc = "Preview hunk" },
     { "<leader>ghi", gitsigns.preview_hunk_inline, desc = "Preview hunk inline" },
-    { "<leader>ghs", gitsigns.select_hunk,         desc = "Select hunk" },
+    { "<leader>ghS", gitsigns.select_hunk,         desc = "Select hunk" },
     { "ih",          gitsigns.select_hunk,         desc = "Hunk",               mode = { "o", "x" } },
     {
       "<leader>gB",
@@ -216,6 +235,16 @@ which_key.add({
       "<cmd>Trouble qflist toggle<cr>",
       desc = "Quickfix List (Trouble)",
     },
+    {
+      "<leader>xt",
+      "<cmd>TodoQuickFix<cr>",
+      desc = "Todo QuickFix",
+    },
+    {
+      "<leader>xT",
+      "<cmd>Trouble todo toggle<cr>",
+      desc = "Todo QuickFix (Trouble)",
+    }
   },
   -- Windows
   {
@@ -282,6 +311,27 @@ which_key.add({
       desc = "Bookmark line with comment"
     },
     { "<leader>ml", "<CMD>:Telescope lspmark<CR>", desc = "List bookmarks" },
+  },
+  -- AI / LLM
+  {
+    { "<leader>a",  group = "AI (CodeCompanion)" },
+    { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "AI Code Actions" },
+    { "<leader>ac", "<cmd>CodeCompanionChat<cr>",    desc = "AI Chat" },
+    { "<leader>a",  group = "AI (CodeCompanion)",    mode = "v" },
+    { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "AI Code Actions",          mode = "v" },
+    { "<leader>ac", "<cmd>CodeCompanionChat<cr>",    desc = "AI Chat (with selection)", mode = "v" },
+    {
+      "<leader>ai",
+      function()
+        vim.api.nvim_feedkeys(
+          vim.api.nvim_replace_termcodes(":'<,'>CodeCompanion ", true, false, true),
+          "n",
+          false
+        )
+      end,
+      desc = "AI Inline Prompt (command-line)",
+      mode = "v",
+    },
   },
   -- UI/UX
   {
