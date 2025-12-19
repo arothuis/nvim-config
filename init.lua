@@ -14,6 +14,8 @@ vim.opt.termguicolors = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 
+vim.opt.wrap = false
+
 -- Better copy-paste
 vim.opt.clipboard = "unnamedplus"
 

@@ -37,8 +37,24 @@ which_key.add({
   },
   -- Search
   {
-    { "<leader>s",   group = "Search" },
-    { "<leader>sf",  telescope.find_files,                desc = "Search file" },
+    { "<leader>s",  group = "Search" },
+    { "<leader>sF", telescope.find_files, desc = "Search file" },
+    {
+      "<leader>sf",
+      function()
+        local project_root = require("telescope.actions").get_parent_guaranteed({
+          path_sep = "/",
+          markers = { ".git", "package.json", "README.md", "Makefile" },
+        })
+        if project_root then
+          require("telescope.builtin").find_files({ cwd = project_root })
+        else
+          local current_file_dir = vim.fn.expand("%:p:h")
+          require("telescope.builtin").find_files({ cwd = current_file_dir })
+        end
+      end,
+      desc = "Search file in current project",
+    },
     { "<leader>so",  telescope.oldfiles,                  desc = "Search old file" },
     { "<leader>st",  telescope.current_buffer_fuzzy_find, desc = "Search in this buffer" },
     { "<leader>sd",  telescope.commands,                  desc = "Search commands" },
@@ -317,6 +333,17 @@ which_key.add({
     { "<leader>a",  group = "AI (CodeCompanion)" },
     { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "AI Code Actions" },
     { "<leader>ac", "<cmd>CodeCompanionChat<cr>",    desc = "AI Chat" },
+    {
+      "<leader>ai",
+      function()
+        vim.api.nvim_feedkeys(
+          vim.api.nvim_replace_termcodes(":CodeCompanion ", true, false, true),
+          "n",
+          false
+        )
+      end,
+      desc = "AI Inline Prompt",
+    },
     { "<leader>a",  group = "AI (CodeCompanion)",    mode = "v" },
     { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "AI Code Actions",          mode = "v" },
     { "<leader>ac", "<cmd>CodeCompanionChat<cr>",    desc = "AI Chat (with selection)", mode = "v" },
@@ -329,13 +356,15 @@ which_key.add({
           false
         )
       end,
-      desc = "AI Inline Prompt (command-line)",
+      desc = "AI Inline Prompt",
       mode = "v",
     },
   },
   -- UI/UX
   {
     { "<leader>u",  group = "User interface" },
+    { "<leader>ur", '<CMD>source %<CR>', desc = "Reload Neovim config" },
+    { "<leader>uw", function() vim.wo.wrap = not vim.wo.wrap end, desc = "Toggle line wrapping" },
     { "<leader>ut", "<CMD>:Themify<CR>",               desc = "Show Themify manager" },
     { "<leader>uT", "<CMD>:Telescope colorscheme<CR>", desc = "Pick colorscheme (Telescope)" },
     {
@@ -347,5 +376,26 @@ which_key.add({
     },
     { "<leader>ud", "<CMD>:Twilight<CR>", desc = "Toggle dimming" },
     { "<leader>uz", "<CMD>:ZenMode<CR>",  desc = "Toggle Zen Mode" },
+    {
+      "<leader>uc",
+      function()
+        vim.cmd("set cursorline!")
+      end,
+      desc = "Toggle cursor line"
+    },
+    {
+      "<leader>uR",
+      function()
+        vim.cmd("set number!")
+      end,
+      desc = "Toggle absolute line numbers"
+    },
+    {
+      "<leader>uu",
+      function()
+        vim.cmd("set spell!")
+      end,
+      desc = "Toggle spell check"
+    },
   },
 })

@@ -15,7 +15,6 @@ return {
     dependencies = {
       { "rafamadriz/friendly-snippets" },
       { "PaterJason/cmp-conjure" },
-
     },
     sources = {
       default = {
@@ -23,7 +22,8 @@ return {
         "path",
         "snippets",
         "buffer",
-        "conjure"
+        "conjure",
+        "codecompanion",
       },
       providers = {
         conjure = {
