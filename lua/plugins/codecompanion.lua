@@ -22,13 +22,19 @@ return {
   opts = {
     strategies = {
       chat = {
-        adapter = "gemma3",
+        adapter = "gemini",
+        model = "gemini-3-flash",
+        -- adapter = "gemma3",
       },
       inline = {
-        adapter = "gemma3",
+        -- adapter = "gemma3",
+        adapter = "gemini",
+        model = "gemini-3-flash",
       },
       cmd = {
-        adapter = "gemma3",
+        -- adapter = "gemma3",
+        adapter = "gemini",
+        model = "gemini-3-flash",
       }
     },
     adapters = {
@@ -41,17 +47,15 @@ return {
             },
             schema = {
               model = {
-                default = "gemma-3-27b-it",
+                default = "gemma-3-4b-it",
               },
               temperature = { default = 1.0 },
             },
             handlers = {
-              -- FIX 1: Strip unsupported OpenAI parameters (frequency_penalty, etc.)
               form_parameters = function(self, params, messages)
                 local openai_params = require("codecompanion.adapters.http.openai").handlers.form_parameters(self, params,
                   messages)
 
-                -- Google's endpoint will 400 if these are present
                 openai_params.frequency_penalty = nil
                 openai_params.presence_penalty = nil
                 openai_params.seed = nil
@@ -59,7 +63,6 @@ return {
                 return openai_params
               end,
 
-              -- FIX 2: Fold system prompts into user messages
               form_messages = function(self, messages)
                 local package = { messages = {} }
                 local system_prompt = ""
@@ -86,27 +89,6 @@ return {
                 return package
               end,
             },
-          })
-        end,
-        gemini = function()
-          return require("codecompanion.adapters").extend("gemini", {
-            schema = {
-              model = {
-                default = vim.g.codecompanion_gemini_model
-                    or "gemma-3-27b-it",
-              },
-            },
-            env = {
-              api_key = os.getenv("GEMINI_API_KEY"),
-            },
-            optional = {
-              generationConfig = {
-                systemPrompt = "",
-                system_prompt = "",
-                temperature = 0.2,
-                maxOutputTokens = 1024,
-              }
-            }
           })
         end,
         opts = {
