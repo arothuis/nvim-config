@@ -50,6 +50,7 @@ return {
       "gleam",
       "html",
       "javascript",
+      "jinja",
       "json",
       "lua",
       "markdown",
@@ -63,5 +64,11 @@ return {
   },
   config = function(_, opts)
     require("nvim-treesitter.configs").setup(opts)
+    vim.treesitter.language.register("jinja", "njk")
+    vim.filetype.add({
+      extension = {
+        njk = "html",
+      },
+    })
   end,
 }
