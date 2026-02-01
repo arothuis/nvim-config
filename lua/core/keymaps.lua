@@ -32,8 +32,8 @@ which_key.add({
   {
     { "<leader>h",  group = "Help" },
     { "<leader>hk", which_key.show,      desc = "Show keymaps" },
-    { "<leader>ht", "<CMD>:Themify<CR>", desc = "Show themes" },
-    { "<leader>hl", "<CMD>:Mason<CR>",   desc = "Show language tools" }
+    { "<leader>ht", "<CMD>Themify<CR>", desc = "Show themes" },
+    { "<leader>hm", "<CMD>Mason<CR>",   desc = "Show Mason" },
   },
   -- Search
   {
@@ -228,9 +228,11 @@ which_key.add({
       end
     },
   },
-  -- Trouble
+  -- Diagnostics and messages
   {
-    { "<leader>x", group = "Trouble lists" },
+    { "<leader>x", group = "Diagnostics and messages" },
+    { "<leader>xm", "<cmd>message<cr>", desc = "Messages" },
+    { "<leader>xn", "<cmd>Noice<cr>", desc = "Notifications (Noice)" },
     {
       "<leader>xx",
       "<cmd>Trouble diagnostics toggle<cr>",
@@ -290,10 +292,10 @@ which_key.add({
         return require("which-key.extras").expand.buf()
       end
     },
-    { "<leader>bn",       ":enew<cr>",       desc = "New buffer" },
+    { "<leader>bn",       "<cmd>enew<cr>",       desc = "New buffer" },
     { "<leader>bb",       telescope.buffers, desc = "Search buffer" },
     { "<leader><leader>", telescope.buffers, desc = "Search buffer" },
-    { "<leader>bc",       ":bdelete!<cr>",   desc = "Close current buffer" },
+    { "<leader>bc",       "<cmd>bdelete!<cr>",   desc = "Close current buffer" },
   },
   -- Bookmarks
   {
@@ -326,7 +328,7 @@ which_key.add({
       end,
       desc = "Bookmark line with comment"
     },
-    { "<leader>ml", "<CMD>:Telescope lspmark<CR>", desc = "List bookmarks" },
+    { "<leader>ml", "<cmd>Telescope lspmark<cr>", desc = "List bookmarks" },
   },
   -- AI / LLM
   {
@@ -365,8 +367,8 @@ which_key.add({
     { "<leader>u",  group = "User interface" },
     { "<leader>ur", '<CMD>source %<CR>', desc = "Reload Neovim config" },
     { "<leader>uw", function() vim.wo.wrap = not vim.wo.wrap end, desc = "Toggle line wrapping" },
-    { "<leader>ut", "<CMD>:Themify<CR>",               desc = "Show Themify manager" },
-    { "<leader>uT", "<CMD>:Telescope colorscheme<CR>", desc = "Pick colorscheme (Telescope)" },
+    { "<leader>ut", "<cmd>Themify<cr>",               desc = "Show Themify manager" },
+    { "<leader>uT", "<cmd>Telescope colorscheme<cr>", desc = "Pick colorscheme (Telescope)" },
     {
       "<leader>un",
       function()
@@ -374,8 +376,8 @@ which_key.add({
       end,
       desc = "Toggle relative line numbers"
     },
-    { "<leader>ud", "<CMD>:Twilight<CR>", desc = "Toggle dimming" },
-    { "<leader>uz", "<CMD>:ZenMode<CR>",  desc = "Toggle Zen Mode" },
+    { "<leader>ud", "<cmd>Twilight<cr>", desc = "Toggle dimming" },
+    { "<leader>uz", "<cmd>ZenMode<cr>",  desc = "Toggle Zen Mode" },
     {
       "<leader>uc",
       function()
@@ -384,18 +386,12 @@ which_key.add({
       desc = "Toggle cursor line"
     },
     {
-      "<leader>uR",
+      "<leader>uN",
       function()
         vim.cmd("set number!")
       end,
       desc = "Toggle absolute line numbers"
     },
-    {
-      "<leader>uu",
-      function()
-        vim.cmd("set spell!")
-      end,
-      desc = "Toggle spell check"
-    },
+    { "<leader>um", "<cmd>Mason<cr>", desc = "Open Mason" }
   },
 })

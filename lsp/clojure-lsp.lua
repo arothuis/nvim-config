@@ -4,8 +4,6 @@ return {
   },
   filetypes = {
     "clojure",
-    "clojurescript",
-    "edn",
   },
   root_markers = {
     ".clj-kondo",
