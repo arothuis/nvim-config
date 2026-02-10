@@ -6,6 +6,25 @@ local oil = require("oil")
 local gitsigns = require("gitsigns")
 local lspmark = require("lspmark.bookmarks")
 
+
+local function any_fold_closed()
+  for i = 1, vim.fn.line("$") do
+    if vim.fn.foldclosed(i) ~= -1 then
+      return true
+    end
+  end
+  return false
+end
+
+local function toggle_all_folds()
+  if any_fold_closed() then
+    vim.cmd("normal! zR")
+  else
+    vim.cmd("normal! zM")
+  end
+end
+
+
 which_key.add({
   -- Global
   {
@@ -21,6 +40,7 @@ which_key.add({
     { "grt",      vim.lsp.buf.type_definition, desc = "Type definition" },
     { "grh",      vim.lsp.buf.signature_help,  desc = "Signature help" },
     { "z",        group = "z commands" },
+    { "zz",       toggle_all_folds,            desc = "Toggle all folds" },
     { "[",        group = "[ commands" },
     { "]",        group = "] commands" },
     { "<A-o>",    "o<Esc>",                    desc = "Insert newline after this line",  mode = "n" },
@@ -31,7 +51,7 @@ which_key.add({
   -- Help
   {
     { "<leader>h",  group = "Help" },
-    { "<leader>hk", which_key.show,      desc = "Show keymaps" },
+    { "<leader>hk", which_key.show,     desc = "Show keymaps" },
     { "<leader>ht", "<CMD>Themify<CR>", desc = "Show themes" },
     { "<leader>hm", "<CMD>Mason<CR>",   desc = "Show Mason" },
   },
@@ -230,9 +250,9 @@ which_key.add({
   },
   -- Diagnostics and messages
   {
-    { "<leader>x", group = "Diagnostics and messages" },
-    { "<leader>xm", "<cmd>message<cr>", desc = "Messages" },
-    { "<leader>xn", "<cmd>Noice<cr>", desc = "Notifications (Noice)" },
+    { "<leader>x",  group = "Diagnostics and messages" },
+    { "<leader>xm", "<cmd>message<cr>",                desc = "Messages" },
+    { "<leader>xn", "<cmd>Noice<cr>",                  desc = "Notifications (Noice)" },
     {
       "<leader>xx",
       "<cmd>Trouble diagnostics toggle<cr>",
@@ -292,10 +312,10 @@ which_key.add({
         return require("which-key.extras").expand.buf()
       end
     },
-    { "<leader>bn",       "<cmd>enew<cr>",       desc = "New buffer" },
-    { "<leader>bb",       telescope.buffers, desc = "Search buffer" },
-    { "<leader><leader>", telescope.buffers, desc = "Search buffer" },
-    { "<leader>bc",       "<cmd>bdelete!<cr>",   desc = "Close current buffer" },
+    { "<leader>bn",       "<cmd>enew<cr>",     desc = "New buffer" },
+    { "<leader>bb",       telescope.buffers,   desc = "Search buffer" },
+    { "<leader><leader>", telescope.buffers,   desc = "Search buffer" },
+    { "<leader>bc",       "<cmd>bdelete!<cr>", desc = "Close current buffer" },
   },
   -- Bookmarks
   {
@@ -365,10 +385,10 @@ which_key.add({
   -- UI/UX
   {
     { "<leader>u",  group = "User interface" },
-    { "<leader>ur", '<CMD>source %<CR>', desc = "Reload Neovim config" },
+    { "<leader>ur", '<CMD>source %<CR>',                          desc = "Reload Neovim config" },
     { "<leader>uw", function() vim.wo.wrap = not vim.wo.wrap end, desc = "Toggle line wrapping" },
-    { "<leader>ut", "<cmd>Themify<cr>",               desc = "Show Themify manager" },
-    { "<leader>uT", "<cmd>Telescope colorscheme<cr>", desc = "Pick colorscheme (Telescope)" },
+    { "<leader>ut", "<cmd>Themify<cr>",                           desc = "Show Themify manager" },
+    { "<leader>uT", "<cmd>Telescope colorscheme<cr>",             desc = "Pick colorscheme (Telescope)" },
     {
       "<leader>un",
       function()
