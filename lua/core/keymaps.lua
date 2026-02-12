@@ -4,8 +4,7 @@ local flash = require("flash")
 local tidy = require("tidy")
 local oil = require("oil")
 local gitsigns = require("gitsigns")
-local lspmark = require("lspmark.bookmarks")
-
+local bookmarks = require("bookmarks")
 
 local function any_fold_closed()
   for i = 1, vim.fn.line("$") do
@@ -23,7 +22,6 @@ local function toggle_all_folds()
     vim.cmd("normal! zM")
   end
 end
-
 
 which_key.add({
   -- Global
@@ -321,34 +319,12 @@ which_key.add({
   {
     { "<leader>m",  group = "Bookmarks" },
     {
-      "<leader>mm",
-      function()
-        lspmark.toggle_bookmark({ with_comment = false })
-      end,
-      desc = "Bookmark line"
+      "<leader>mm", bookmarks.bookmark_toggle, desc = "Bookmark line"
     },
     {
-      "<c-b>",
-      function()
-        lspmark.toggle_bookmark({ with_comment = false })
-      end,
-      desc = "Bookmark line"
+      "<leader>mc", bookmarks.bookmark_ann, desc = "Bookmark with comment"
     },
-    {
-      "<leader>mc",
-      function()
-        lspmark.toggle_bookmark({ with_comment = true })
-      end,
-      desc = "Bookmark line with comment"
-    },
-    {
-      "<c-s-b>",
-      function()
-        lspmark.toggle_bookmark({ with_comment = true })
-      end,
-      desc = "Bookmark line with comment"
-    },
-    { "<leader>ml", "<cmd>Telescope lspmark<cr>", desc = "List bookmarks" },
+    { "<leader>ml", "<cmd>Telescope bookmarks list<cr>", desc = "List bookmarks" },
   },
   -- AI / LLM
   {
