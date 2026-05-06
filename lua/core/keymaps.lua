@@ -326,37 +326,8 @@ which_key.add({
     },
     { "<leader>ml", "<cmd>Telescope bookmarks list<cr>", desc = "List bookmarks" },
   },
-  -- AI / LLM
+  -- AI
   {
-    { "<leader>a",  group = "AI (CodeCompanion)" },
-    { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "AI Code Actions" },
-    { "<leader>ac", "<cmd>CodeCompanionChat<cr>",    desc = "AI Chat" },
-    {
-      "<leader>ai",
-      function()
-        vim.api.nvim_feedkeys(
-          vim.api.nvim_replace_termcodes(":CodeCompanion ", true, false, true),
-          "n",
-          false
-        )
-      end,
-      desc = "AI Inline Prompt",
-    },
-    { "<leader>a",  group = "AI (CodeCompanion)",    mode = "v" },
-    { "<leader>aa", "<cmd>CodeCompanionActions<cr>", desc = "AI Code Actions",          mode = "v" },
-    { "<leader>ac", "<cmd>CodeCompanionChat<cr>",    desc = "AI Chat (with selection)", mode = "v" },
-    {
-      "<leader>ai",
-      function()
-        vim.api.nvim_feedkeys(
-          vim.api.nvim_replace_termcodes(":'<,'>CodeCompanion ", true, false, true),
-          "n",
-          false
-        )
-      end,
-      desc = "AI Inline Prompt",
-      mode = "v",
-    },
   },
   -- UI/UX
   {

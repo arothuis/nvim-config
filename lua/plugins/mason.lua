@@ -1,18 +1,29 @@
 return {
   {
     "mason-org/mason.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "mason-org/mason-lspconfig.nvim",
+    },
     opts = {},
     config = function()
-      local mason = require("mason")
-      mason.setup()
+      require("mason").setup()
 
-      for _, f in pairs(vim.api.nvim_get_runtime_file('lsp/*.lua', true)) do
-        local name = vim.fn.fnamemodify(f, ':t:r')
-        local cmd = dofile(f).cmd[1]
-        if vim.fn.executable(cmd) == 0 then
-          print(name)
-          vim.cmd("MasonInstall " .. name)
-        end
+      local servers = {
+        "lua_ls",
+        "clojure_lsp",
+        "svelte",
+        "tailwindcss",
+        "cssls",
+        "css_variables",
+        "ts_ls",
+      }
+
+      require("mason-lspconfig").setup({
+        ensure_installed = servers,
+      })
+
+      for _, name in ipairs(servers) do
         vim.lsp.enable(name)
       end
     end
