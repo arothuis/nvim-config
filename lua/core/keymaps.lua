@@ -1,10 +1,11 @@
+local paredit = require("nvim-paredit")
 local which_key = require("which-key")
 local telescope = require("telescope.builtin")
 local flash = require("flash")
 local tidy = require("tidy")
 local oil = require("oil")
 local gitsigns = require("gitsigns")
-local lspmark = require('lspmark.bookmarks')
+local lspmark = require("lspmark.bookmarks")
 
 which_key.add({
   -- Global
@@ -23,6 +24,9 @@ which_key.add({
     { "z",        group = "z commands" },
     { "[",        group = "[ commands" },
     { "]",        group = "] commands" },
+    { "<esc>",    "<CMD>:nohlsearch<CR>",      desc = "Clear highlights" },
+    { "<A-o>",    "o<Esc>",                    desc = "Insert newline after this line",  mode = "n" },
+    { "<A-O>",    "O<Esc>",                    desc = "Insert newline before this line", mode = "n" },
     { "<leader>", group = "Leader" },
   },
   -- Help
@@ -34,18 +38,30 @@ which_key.add({
   },
   -- Search
   {
-    { "<leader>s",   group = "Search" },
-    { "<leader>sf",  telescope.find_files,                desc = "Search file" },
-    { "<leader>so",  telescope.oldfiles,                  desc = "Search old file" },
-    { "<leader>st",  telescope.current_buffer_fuzzy_find, desc = "Search in this buffer" },
-    { "<leader>sd",  telescope.commands,                  desc = "Search commands" },
-    { "<leader>sc",  telescope.grep_string,               desc = "Search cursor grep" },
-    { "<leader>sw",  telescope.live_grep,                 desc = "Search live grep" },
-    { "<leader>sg",  telescope.live_grep,                 desc = "Search live grep" },
-    { "<leader>sb",  telescope.buffers,                   desc = "Search buffer" },
-    { "<leader>sh",  telescope.help_tags,                 desc = "Search help tags" },
-    { "<leader>sk",  telescope.keymaps,                   desc = "Search keymaps" },
-    { "<leader>css", telescope.lsp_workspace_symbols,     desc = "Search workspace symbols " },
+    { "<leader>s",  group = "Search" },
+    {
+      "<leader>sf",
+      function()
+        telescope.find_files({ no_ignore = false, hidden = true })
+      end,
+      desc = "Search file"
+    },
+    { "<leader>si", telescope.lsp_implementations,       desc = "Search implementations" },
+    { "<leader>sr", telescope.lsp_references,            desc = "Show references" },
+    { "<leader>st", telescope.lsp_type_definition,       desc = "Show type definition" },
+    { "<leader>sh", vim.lsp.buf.signature_help,          desc = "Show signature help" },
+    { "<leader>so", telescope.oldfiles,                  desc = "Search old file" },
+    { "<leader>st", telescope.current_buffer_fuzzy_find, desc = "Search in this buffer" },
+    { "<leader>sd", telescope.commands,                  desc = "Search commands" },
+    { "<leader>sc", telescope.grep_string,               desc = "Search cursor grep" },
+    { "<leader>sw", telescope.live_grep,                 desc = "Search live grep" },
+    { "<leader>sg", telescope.live_grep,                 desc = "Search live grep" },
+    { "<leader>sb", telescope.buffers,                   desc = "Search buffer" },
+    { "<leader>sh", telescope.help_tags,                 desc = "Search help tags" },
+    { "<leader>sk", telescope.keymaps,                   desc = "Search keymaps" },
+    { "<leader>ss", telescope.lsp_workspace_symbols,     desc = "Search workspace symbols " },
+    { "<leader>sT", "<cmd>TodoTelescope<cr>",            desc = "Search todo comments" },
+    { "<leader>sx", telescope.resume,                    desc = "Search continued..." },
   },
   -- Flash (cursor jumping)
   {
@@ -64,13 +80,33 @@ which_key.add({
       end,
       desc = "Explore configuration (Oil)"
     },
+    {
+      "<leader>fh",
+      function()
+        oil.open("~")
+      end,
+      desc = "Explore home (Oil)"
+    },
+    {
+      "<leader>fk",
+      function()
+        oil.open(vim.fn.stdpath("config") .. "/" .. "lua/core/keymaps.lua")
+      end,
+      desc = "Open keymaps file (Oil)"
+    },
+    {
+      "<leader>fh",
+      function()
+        oil.open("~")
+      end,
+      desc = "Explore home directory (Oil)"
+    },
     { "<leader>o", oil.open, desc = "Explore workspace (Oil)" }
   },
   -- Code
   {
-    mode = {"v", "n"},
+    mode = { "v", "n" },
     { "<leader>c",  group = "Code" },
-    { "<leader>ct", tidy.run,                desc = "Trim whitespace" },
     { "<leader>cr", vim.lsp.buf.rename,      desc = "Rename" },
     { "<leader>ca", vim.lsp.buf.code_action, desc = "Code action" },
     { "<leader>cs", group = "Show" },
@@ -124,12 +160,12 @@ which_key.add({
       "<cmd>Trouble lsp_type_definitions toggle focus=false win.position=right<cr>",
       desc = "Show type definitions (Trouble)"
     },
-    -- { "<leader>csi", telescope.lsp_implementations, desc = "Show implementations" },
-    -- { "<leader>csr", telescope.lsp_references, desc = "Show references" },
-    -- { "<leader>cst", telescope.lsp_type_definition, desc = "Show type definition" },
-    { "<leader>csh", vim.lsp.buf.signature_help, desc = "Show signature help" },
-    { "<leader>cc",  vim.lsp.buf.signature_help, desc = "Show signature help" },
-    -- See LSP-specific config
+    { "<leader>cc",  vim.lsp.buf.signature_help,                                      desc = "Show signature help" },
+    { "<leader>cb",  group = "Base64" },
+    { "<leader>cbe", "c<c-r>=trim(system('base64 --wrap=0', @\"))<cr><esc>",          desc = "Base64 encode" },
+    { "<leader>cbd", "c<c-r>=trim(system('base64 --wrap=0 --decode', @\"))<cr><esc>", desc = "Base64 decode" },
+
+    -- See also: LSP-config, LSP-specific config and local leader
   },
   -- Git
   {
@@ -154,10 +190,14 @@ which_key.add({
       desc = "Reset part of hunk",
       mode = { "v" }
     },
+    { "<leader>gs",  group = "Show",               mode = { "n", "v" } },
+    { "<leader>gsc", telescope.git_bcommits,       desc = "Git show buffer commits" },
+    { "<leader>gsc", telescope.git_bcommits_range, desc = "Git show buffer commits", mode = { "v" } },
+    { "<leader>gsC", telescope.git_commits,        desc = "Git show commits" },
+    { "<leader>gss", telescope.git_status,         desc = "Git show file status" },
     { "<leader>ghp", gitsigns.preview_hunk,        desc = "Preview hunk" },
     { "<leader>ghi", gitsigns.preview_hunk_inline, desc = "Preview hunk inline" },
-    { "<leader>ghs", gitsigns.select_hunk,         desc = "Select hunk" },
-    { "ih",          gitsigns.select_hunk,         desc = "Hunk",               mode = { "o", "x" } },
+    { "<leader>ghS", gitsigns.select_hunk,         desc = "Select hunk" },
     {
       "<leader>gB",
       function()
@@ -180,7 +220,8 @@ which_key.add({
         else
           gitsigns.nav_hunk("prev")
         end
-      end
+      end,
+      desc = "Previous hunk"
     },
     {
       "]h",
@@ -190,7 +231,8 @@ which_key.add({
         else
           gitsigns.nav_hunk("next")
         end
-      end
+      end,
+      desc = "Next hunk"
     },
   },
   -- Trouble
@@ -216,6 +258,16 @@ which_key.add({
       "<cmd>Trouble qflist toggle<cr>",
       desc = "Quickfix List (Trouble)",
     },
+    {
+      "<leader>xt",
+      "<cmd>TodoQuickFix<cr>",
+      desc = "Todo QuickFix",
+    },
+    {
+      "<leader>xT",
+      "<cmd>Trouble todo toggle<cr>",
+      desc = "Todo QuickFix (Trouble)",
+    }
   },
   -- Windows
   {
@@ -245,10 +297,14 @@ which_key.add({
         return require("which-key.extras").expand.buf()
       end
     },
-    { "<leader>bn",       ":enew<cr>",       desc = "New buffer" },
-    { "<leader>bb",       telescope.buffers, desc = "Search buffer" },
-    { "<leader><leader>", telescope.buffers, desc = "Search buffer" },
-    { "<leader>bc",       ":bdelete!<cr>",   desc = "Close current buffer" },
+    { "<leader>bn",       "<cmd>enew<cr>",          desc = "New buffer" },
+    { "<leader>br",       "<cmd>edit!<cr>",         desc = "Reload buffer" },
+    { "<leader>bR",       "<cmd>buffdo edit!</cr>", desc = "Reload all buffers" },
+    { "<leader>bb",       telescope.buffers,        desc = "Search buffer" },
+    { "<leader><leader>", telescope.buffers,        desc = "Search buffer" },
+    { "<leader>bc",       "<cmd>bdelete!<cr>",      desc = "Close current buffer" },
+    { "<leader>bC",       "<cmd>%bd<cr>",           desc = "Close all buffers" },
+    { "<leader>bx",       "<cmd>%bd|e#<cr>",        desc = "Close all other buffers" },
   },
   -- Bookmarks
   {
@@ -297,5 +353,82 @@ which_key.add({
     },
     { "<leader>ud", "<CMD>:Twilight<CR>", desc = "Toggle dimming" },
     { "<leader>uz", "<CMD>:ZenMode<CR>",  desc = "Toggle Zen Mode" },
+    {
+      "<leader>uc",
+      function()
+        local ccs = vim.opt_local.colorcolumn:get()
+
+        local nums = {}
+        for _, v in ipairs(ccs) do
+          table.insert(nums, tonumber(v))
+        end
+
+        if vim.tbl_contains(nums, 80) then
+          vim.opt_local.colorcolumn = {}
+        else
+          vim.opt_local.colorcolumn = { "80" }
+        end
+      end,
+      desc = "Toggle character limit column",
+    }
+  },
+  -- AI / Claude Code
+  {
+    { "<leader>a",  group = "AI (Claude Code)" },
+    { "<leader>ac", "<cmd>ClaudeCode<cr>",            desc = "Toggle Claude" },
+    { "<leader>af", "<cmd>ClaudeCodeFocus<cr>",       desc = "Focus Claude" },
+    { "<leader>ar", "<cmd>ClaudeCode --resume<cr>",   desc = "Resume Claude session" },
+    { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue last Claude session" },
+    { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+    { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>",       desc = "Add current buffer to Claude" },
+    { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>",  desc = "Accept Claude diff" },
+    { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>",    desc = "Reject Claude diff" },
+    { "<leader>a",  group = "AI (Claude Code)",       mode = "v" },
+    { "<leader>as", "<cmd>ClaudeCodeSend<cr>",        desc = "Send selection to Claude", mode = "v" },
+    { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>",       desc = "Add current buffer to Claude", mode = "v" },
+  },
+  -- Localleader
+  {
+    {
+      "<localleader>w",
+      function()
+        paredit.cursor.place_cursor(
+          paredit.wrap.wrap_element_under_cursor("( ", ")"),
+          { placement = "inner_start", mode = "insert" }
+        )
+      end,
+      desc = "Wrap element insert head"
+    },
+    {
+      "<localleader>W",
+      function()
+        paredit.cursor.place_cursor(
+          paredit.wrap.wrap_element_under_cursor("( ", ")"),
+          { placement = "inner_end", mode = "insert" }
+        )
+      end,
+      desc = "Wrap element insert tail"
+    },
+    {
+      "<localleader>i",
+      function()
+        paredit.cursor.place_cursor(
+          paredit.wrap.wrap_enclosing_form_under_cursor("( ", ")"),
+          { placement = "inner_start", mode = "insert" }
+        )
+      end,
+      desc = "Wrap form insert tail"
+    },
+    {
+      "<localleader>W",
+      function()
+        paredit.cursor.place_cursor(
+          paredit.wrap.wrap_enclosing_form_under_cursor("( ", ")"),
+          { placement = "inner_end", mode = "insert" }
+        )
+      end,
+      desc = "Wrap form insert tail"
+    },
+
   },
 })

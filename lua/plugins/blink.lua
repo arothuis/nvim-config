@@ -9,8 +9,14 @@ return {
     "saghen/blink.cmp",
     version = "1.*",
     opts = {
-      keymap = { preset = "enter" },
-      completion = { documentation = { auto_show = true } },
+      keymap = {
+        preset = "super-tab"
+      },
+      completion = {
+        documentation = {
+          auto_show = true
+        }
+      },
     },
     dependencies = {
       { "rafamadriz/friendly-snippets" },
